@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { TaskBoardComponent } from './components/task-components/task-board/task-board.component';
 
 @Component({
   selector: 'app-root',

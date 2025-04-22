@@ -1,12 +1,18 @@
-// src/app/app.module.ts
-import { importProvidersFrom, NgModule, provideZoneChangeDetection } from '@angular/core';
+import {
+  importProvidersFrom,
+  NgModule,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideRouter, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { TaskModule } from './components/task-components/task.module';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideAnimations, BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  provideAnimations,
+  BrowserAnimationsModule,
+} from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
 import { withNgxsFormPlugin } from '@ngxs/form-plugin';
@@ -25,7 +31,7 @@ import Aura from '@primeng/themes/aura';
   declarations: [AppComponent],
   imports: [BrowserModule, RouterModule.forRoot([]), TaskModule],
   bootstrap: [AppComponent],
-  providers:[
+  providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptors([apiInterceptor])),
@@ -49,11 +55,7 @@ import Aura from '@primeng/themes/aura';
       withNgxsWebSocketPlugin()
     ),
     provideStates([TaskState]),
-    importProvidersFrom(
-      BrowserModule,
-      BrowserAnimationsModule,
-      TaskModule
-    ),
-  ]
+    importProvidersFrom(BrowserModule, BrowserAnimationsModule, TaskModule),
+  ],
 })
 export class AppModule {}
