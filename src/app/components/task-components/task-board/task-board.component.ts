@@ -12,13 +12,7 @@ import { TaskSelectors } from '../../../core/state/task.selector';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
 type Status = 'todo' | 'inProgress' | 'done';
-type TagSeverity =
-  | 'success'
-  | 'secondary'
-  | 'info'
-  | 'warn'
-  | 'danger'
-  | 'contrast';
+type TagSeverity = 'success' | 'info' | 'warn';
 
 @Component({
   selector: 'app-task-board',
@@ -27,29 +21,28 @@ type TagSeverity =
   standalone: false,
 })
 export class TaskBoardComponent implements OnInit {
+  // UI state
   showDialog = false;
   selectedTask?: Task;
   hoveredStatus: Status | null = null;
 
+  // Data
+  tasks: Record<Status, Task[]> = { todo: [], inProgress: [], done: [] };
+
+  // Constants
   readonly statuses = ['todo', 'inProgress', 'done'] as const;
   readonly statusLabels: Record<Status, string> = {
     todo: 'To Do',
     inProgress: 'In Progress',
     done: 'Done',
   };
-
   readonly statusSeverity: Record<Status, TagSeverity> = {
     todo: 'info',
     inProgress: 'warn',
     done: 'success',
   };
 
-  tasks: Record<Status, Task[]> = {
-    todo: [],
-    inProgress: [],
-    done: [],
-  };
-
+  // Drag‑drop tracking
   private draggedTask: Task | null = null;
   private draggedFrom: Status | null = null;
 
@@ -60,11 +53,14 @@ export class TaskBoardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.store.dispatch(new LoadTasks());
+    this.loadTasks();
+  }
 
+  private loadTasks() {
+    this.store.dispatch(new LoadTasks());
     this.store
       .select(TaskSelectors.byStatus)
-      .subscribe((m) => (this.tasks = m));
+      .subscribe((buckets) => (this.tasks = buckets));
   }
 
   dragStart(task: Task, from: Status) {
@@ -73,8 +69,7 @@ export class TaskBoardComponent implements OnInit {
   }
 
   dragEnd() {
-    this.draggedTask = null;
-    this.draggedFrom = null;
+    this.draggedTask = this.draggedFrom = null;
   }
 
   dragEnter(status: Status) {
@@ -85,21 +80,47 @@ export class TaskBoardComponent implements OnInit {
     this.hoveredStatus = null;
   }
 
-  onDrop(event: any, to: Status) {
+  onDrop(_: any, to: Status) {
     this.dragLeave();
-
     if (!this.draggedTask || this.draggedFrom === to) {
       return this.dragEnd();
     }
-    const { id } = this.draggedTask;
-    this.store
-      .dispatch(new PatchTask(id, { status: to }))
-      .subscribe({ next: () => this.dragEnd(), error: () => this.dragEnd() });
+    this.changeStatus(this.draggedTask.id, to);
+  }
+
+  private changeStatus(id: number, to: Status) {
+    this.dispatchAndNotify(
+      new PatchTask(id, { status: to }),
+      'Status Updated',
+      `Task moved to "${this.statusLabels[to]}"`,
+      'Update Failed',
+      `Could not move task to "${this.statusLabels[to]}"`
+    ).add(() => this.dragEnd());
   }
 
   addEditTask(task?: Task) {
     this.selectedTask = task ? { ...task } : undefined;
     this.showDialog = true;
+  }
+
+  onSave(taskOrNew: Task | Omit<Task, 'id'>) {
+    if ('id' in taskOrNew) {
+      this.dispatchAndNotify(
+        new UpdateTask(taskOrNew.id, taskOrNew as Task),
+        'Updated',
+        'Task was updated',
+        'Update Failed',
+        'Could not update task'
+      ).add(() => (this.showDialog = false));
+    } else {
+      this.dispatchAndNotify(
+        new AddTask(taskOrNew),
+        'Created',
+        'Task was created',
+        'Create Failed',
+        'Could not create task'
+      ).add(() => (this.showDialog = false));
+    }
   }
 
   confirmDelete(id: number) {
@@ -115,70 +136,38 @@ export class TaskBoardComponent implements OnInit {
     });
   }
 
-  deleteTask(id: number) {
-    this.store.dispatch(new DeleteTask(id)).subscribe({
-      next: () => {
+  private deleteTask(id: number) {
+    this.dispatchAndNotify(
+      new DeleteTask(id),
+      'Deleted',
+      'Task was deleted',
+      'Delete Failed',
+      'Could not delete task'
+    );
+  }
+
+  private dispatchAndNotify(
+    action: any,
+    successSummary: string,
+    successDetail: string,
+    errorSummary: string,
+    errorDetail: string
+  ) {
+    return this.store.dispatch(action).subscribe({
+      next: () =>
         this.messageService.add({
           key: 'global',
           severity: 'success',
-          summary: 'Deleted',
-          detail: 'Task was deleted',
-        });
-      },
-      error: (err) => {
+          summary: successSummary,
+          detail: successDetail,
+        }),
+      error: () =>
         this.messageService.add({
           key: 'global',
           severity: 'error',
-          summary: 'Delete Failed',
-          detail: 'Could not delete task',
-        });
-      },
+          summary: errorSummary,
+          detail: errorDetail,
+        }),
     });
-  }
-
-  onSave(taskOrNew: Task | Omit<Task, 'id'>) {
-    if ('id' in taskOrNew) {
-      this.store
-        .dispatch(new UpdateTask(taskOrNew.id, taskOrNew as Task))
-        .subscribe({
-          next: () => {
-            this.showDialog = false;
-            this.messageService.add({
-              key: 'global',
-              severity: 'success',
-              summary: 'Updated',
-              detail: 'Task was updated',
-            });
-          },
-          error: () => {
-            this.messageService.add({
-              key: 'global',
-              severity: 'error',
-              summary: 'Update Failed',
-              detail: 'Could not update task',
-            });
-          },
-        });
-    } else {
-      this.store.dispatch(new AddTask(taskOrNew)).subscribe({
-        next: () => {
-          this.showDialog = false;
-          this.messageService.add({
-            key: 'global',
-            severity: 'success',
-            summary: 'Created',
-            detail: 'Task was created',
-          });
-        },
-        error: () => {
-          this.messageService.add({
-            key: 'global',
-            severity: 'error',
-            summary: 'Create Failed',
-            detail: 'Could not create task',
-          });
-        },
-      });
-    }
   }
 }

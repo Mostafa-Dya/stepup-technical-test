@@ -39,7 +39,6 @@ export class TaskFormComponent implements OnInit, OnChanges {
       dueDate: [null, [Validators.required, futureDateValidator()]],
       status: ['todo', Validators.required],
     });
-    console.log('testtt');
   }
 
   ngOnChanges(changes: SimpleChanges) {
