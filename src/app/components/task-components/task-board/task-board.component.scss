@@ -1,0 +1,38 @@
+.drop-zone {
+  min-height: 200px;
+  background-color: #e9ecef;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s ease;
+}
+
+.drop-zone.p-droppable-over {
+  background-color: rgba(13, 110, 253, 0.1);
+}
+
+.draggable-card {
+  cursor: grab;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.draggable-card.p-draggable-dragging {
+  cursor: grabbing;
+  transform: scale(1.02);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.p-tooltip {
+  z-index: 1500 !important;
+}
+
+.header-highlight {
+  background-color: #0d6efd;
+  color: white;
+}
+
+:host ::ng-deep .p-toast-detail , p-icon {
+  color: #000 !important;
+}
+
+:host ::ng-deep .p-toast-close-button{
+  background-color: #FFFFFF;
+}

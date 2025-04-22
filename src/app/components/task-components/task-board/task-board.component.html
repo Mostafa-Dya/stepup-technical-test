@@ -1,0 +1,105 @@
+<!-- Confirmation Delete -->
+<p-confirmDialog appendTo="body"></p-confirmDialog>
+<p-toast position="top-right" key="global" [life]="30000"></p-toast>
+
+<div class="container-fluid py-3">
+  <div class="d-flex justify-content-end mb-4">
+    <p-button
+      pButton
+      pTooltip="Create new task"
+      (click)="addEditTask()"
+      class="p-button-text"
+    >
+      <i class="pi pi-plus"></i> Add Task
+    </p-button>
+  </div>
+
+  <!-- Board Columns -->
+  <div class="row gx-3 gy-4">
+    <ng-container *ngFor="let status of statuses">
+      <div class="col-12 col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div
+            class="card-header"
+            [ngClass]="{ 'header-highlight': hoveredStatus === status }"
+          >
+            <h5 class="mb-0">{{ statusLabels[status] }}</h5>
+          </div>
+
+          <div
+            class="card-body p-2 drop-zone"
+            pDroppable
+            (onDragEnter)="dragEnter(status)"
+            (onDragLeave)="dragLeave()"
+            (onDrop)="onDrop($event, status)"
+          >
+            <div
+              *ngFor="let task of tasks[status]"
+              class="card mb-3 position-relative draggable-card"
+              pDraggable
+              (onDragStart)="dragStart(task, status)"
+              (onDragEnd)="dragEnd()"
+            >
+              <div class="card-body pb-2">
+                <div class="d-flex justify-content-between">
+                  <h6 class="card-title">{{ task.id }}</h6>
+                  <p-tag
+                    [severity]="statusSeverity[task.status]"
+                    [value]="statusLabels[task.status]"
+                    class="status-tag"
+                  ></p-tag>
+                </div>
+
+                <h6 class="card-title">{{ task.title }}</h6>
+                <p class="card-text flex-grow-1">{{ task.description }}</p>
+              </div>
+              <div
+                class="card-footer d-flex justify-content-between align-items-center py-2"
+              >
+                <small class="text-muted">
+                  Due: {{ task.dueDate | date : "mediumDate" }}
+                </small>
+                <div>
+                  <p-button
+                    pButton
+                    pTooltip="Edit task"
+                    severity="warn"
+                    class="p-button-text"
+                    icon="pi pi-pencil"
+                    (click)="addEditTask(task)"
+                  />
+
+                  <p-button
+                    pButton
+                    type="button"
+                    icon="pi pi-trash"
+                    class="p-button-text"
+                    pTooltip="Delete task"
+                    severity="danger"
+                    (click)="confirmDelete(task.id)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Add/Edit Dialog -->
+  <p-dialog
+    header="{{ selectedTask ? 'Edit Task' : 'Add Task' }}"
+    [(visible)]="showDialog"
+    [modal]="true"
+    [closable]="true"
+    appendTo="body"
+    [style]="{ width: '500px' }"
+  >
+    <app-task-form
+      [task]="selectedTask"
+      (cancel)="showDialog = false"
+      (save)="onSave($event)"
+    ></app-task-form>
+  </p-dialog>
+</div>

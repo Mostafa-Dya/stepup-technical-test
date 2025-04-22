@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "serve:ssr:Frontend-Technical-Test": "node dist/frontend-technical-test/server/server.mjs",
+    "start:api": "json-server --watch db.json --port 3000"
   },
   "private": true,
   "dependencies": {
@@ -17,6 +19,19 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@ngxs/devtools-plugin": "19.0.0",
+    "@ngxs/form-plugin": "19.0.0",
+    "@ngxs/hmr-plugin": "19.0.0",
+    "@ngxs/logger-plugin": "19.0.0",
+    "@ngxs/router-plugin": "19.0.0",
+    "@ngxs/storage-plugin": "19.0.0",
+    "@ngxs/store": "^19.0.0",
+    "@ngxs/websocket-plugin": "19.0.0",
+    "@primeng/themes": "^19.1.0",
+    "bootstrap": "^5.3.5",
+    "json-server": "^1.0.0-beta.3",
+    "primeicons": "^7.0.0",
+    "primeng": "^19.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

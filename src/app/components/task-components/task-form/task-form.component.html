@@ -1,0 +1,87 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+  class="task-form p-fluid p-formgrid p-grid"
+>
+  <div class="p-field p-col-12">
+    <label for="title">Title <span class="required text-danger">*</span></label>
+    <input id="title" type="text" pInputText formControlName="title" />
+    <p-message
+      *ngIf="form.controls['title'].invalid && form.controls['title'].touched"
+      severity="error"
+      text="Title is required"
+    ></p-message>
+  </div>
+
+  <div class="p-field p-col-12 p-md-6">
+    <label for="dueDate">
+      Due Date <span class="required text-danger">*</span>
+    </label>
+    <p-datepicker
+      id="dueDate"
+      formControlName="dueDate"
+      dateFormat="yy-mm-dd"
+      showIcon
+      appendTo="body"
+      styleClass="w-100"
+
+    />
+    <p-message
+      *ngIf="
+        form.get('dueDate')?.invalid &&
+        form.get('dueDate')?.touched &&
+        form.get('dueDate')?.hasError('required')
+      "
+      severity="error"
+      text="Due date is required"
+    />
+    <p-message
+      *ngIf="
+        form.get('dueDate')?.invalid &&
+        form.get('dueDate')?.touched &&
+        form.get('dueDate')?.hasError('futureDate')
+      "
+      severity="error"
+      text="Date must be in the future"
+    ></p-message>
+  </div>
+
+  <div class="p-field p-col-12">
+    <label for="description">Description</label>
+    <textarea
+      id="description"
+      pTextarea
+      rows="3"
+      formControlName="description"
+    ></textarea>
+  </div>
+
+  <div class="p-field p-col-12 p-md-6">
+    <label for="status">
+      Status <span class="required text-danger">*</span>
+    </label>
+    <p-select
+      id="status"
+      [options]="statusOptions"
+      optionLabel="label"
+      optionValue="value"
+      formControlName="status"
+      appendTo="body"
+    />
+    <p-message
+      *ngIf="form.get('status')?.invalid && form.get('status')?.touched"
+      severity="error"
+      text="Status is required"
+    />
+  </div>
+
+  <div class="p-col-12 dialog-footer">
+    <p-button
+      type="button"
+      label="Cancel"
+      severity="danger"
+      (click)="cancel.emit()"
+    />
+    <p-button type="submit" label="Save" severity="success"  [disabled]="form.invalid" />
+  </div>
+</form>

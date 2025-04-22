@@ -1,0 +1,46 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Design wireframes",
+      "description": "Create low‑fidelity wireframes for the new dashboard page.",
+      "dueDate": "2025-05-10T09:00:00.000Z",
+      "status": "todo"
+    },
+    {
+      "title": "Implement authentication",
+      "description": "Set up login, registration, and JWT flow in the backend.",
+      "dueDate": "2025-05-05T21:00:00.000Z",
+      "status": "done",
+      "id": "2"
+    },
+    {
+      "id": "3",
+      "title": "Fix mobile layout bugs",
+      "description": "Resolve CSS issues causing overflow on small screens.",
+      "dueDate": "2025-04-28T12:00:00.000Z",
+      "status": "inProgress"
+    },
+    {
+      "id": "4",
+      "title": "Write unit tests",
+      "description": "Cover TaskService and TaskState with Jasmine tests.",
+      "dueDate": "2025-05-15T15:00:00.000Z",
+      "status": "inProgress"
+    },
+    {
+      "id": "5",
+      "title": "Optimize performance",
+      "description": "Lazy‑load modules and memoize selectors to speed up initial load.",
+      "dueDate": "2025-05-03T11:00:00.000Z",
+      "status": "todo"
+    },
+    {
+      "id": "6",
+      "title": "Refactor NGXS state",
+      "description": "Simplify actions and selectors; move to @ngxs‑labs/data.",
+      "dueDate": "2025-04-25T14:00:00.000Z",
+      "status": "done"
+    }
+  ]
+}
