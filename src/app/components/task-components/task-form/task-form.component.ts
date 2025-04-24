@@ -37,7 +37,7 @@ export class TaskFormComponent implements OnInit, OnChanges {
       title: [null, Validators.required],
       description: [null],
       dueDate: [null, [Validators.required, futureDateValidator()]],
-      status: ['todo', Validators.required],
+      status: ['todo'],
     });
   }
 

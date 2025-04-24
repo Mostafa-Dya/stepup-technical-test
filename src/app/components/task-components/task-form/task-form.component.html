@@ -58,7 +58,7 @@
 
   <div class="p-field p-col-12 p-md-6">
     <label for="status">
-      Status <span class="required text-danger">*</span>
+      Status
     </label>
     <p-select
       id="status"
@@ -67,11 +67,6 @@
       optionValue="value"
       formControlName="status"
       appendTo="body"
-    />
-    <p-message
-      *ngIf="form.get('status')?.invalid && form.get('status')?.touched"
-      severity="error"
-      text="Status is required"
     />
   </div>
 
