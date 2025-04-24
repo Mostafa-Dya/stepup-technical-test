@@ -11,7 +11,7 @@ export class TaskApiService {
   getAll() {
     return this.http.get<Task[]>(this.base);
   }
-  
+
   create(payload: Omit<Task, 'id'>) {
     return this.http.post<Task>(this.base, payload);
   }

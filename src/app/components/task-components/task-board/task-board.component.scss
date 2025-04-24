@@ -29,10 +29,11 @@
   color: white;
 }
 
-:host ::ng-deep .p-toast-detail , p-icon {
+:host ::ng-deep .p-toast-detail,
+p-icon {
   color: #000 !important;
 }
 
-:host ::ng-deep .p-toast-close-button{
-  background-color: #FFFFFF;
+:host ::ng-deep .p-toast-close-button {
+  background-color: #ffffff;
 }
